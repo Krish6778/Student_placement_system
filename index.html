@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Placement System Final</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;font-family:Arial;background:#ecf0f1;color:#2c3e50}
+.navbar{display:flex;justify-content:space-between;padding:15px 30px;background:#2c3e50;color:white}
+.menu a{margin:0 10px;cursor:pointer}
+
+.section{display:none;text-align:center;margin-top:60px}
+.active{display:block}
+
+.card{background:white;padding:25px;width:320px;margin:15px auto;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+
+input{width:90%;padding:10px;margin:6px;border-radius:5px;border:1px solid #ccc}
+
+button{padding:10px 20px;border:none;border-radius:5px;background:#2c3e50;color:white;cursor:pointer}
+button:hover{background:#34495e}
+
+.row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+
+.profileBox{width:85%;margin:20px auto;background:white;padding:20px;border-radius:10px;text-align:left}
+
+.companyProfileBox{position:absolute;top:80px;right:0;width:240px;background:#2c3e50;color:white;padding:15px;border-radius:10px 0 0 10px}
+
+.skillsGrid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.skillsGrid label{display:flex;align-items:center;gap:6px;background:#f4f6f7;padding:6px 10px;border-radius:20px}
+
+.skillTag{background:#2c3e50;color:white;padding:3px 8px;margin:2px;border-radius:5px;font-size:12px;display:inline-block}
+
+.jobsContainer{display:flex;gap:20px;width:90%;margin:20px auto}
+
+.jobSection{flex:1;background:white;padding:15px;border-radius:10px}
+
+.jobCard{background:#f8f9fa;padding:15px;margin:10px 0;border-radius:8px;position:relative}
+
+.companyTag{
+position:absolute;
+top:8px;
+left:8px;
+background:#2c3e50;
+color:white;
+padding:3px 8px;
+border-radius:5px;
+font-size:11px;
+}
+
+.applyBtn{width:100%;margin-top:10px;background:#27ae60}
+
+.companyJobsPanel{
+width:90%;
+margin:20px auto;
+background:white;
+padding:15px;
+border-radius:10px;
+text-align:left;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+<div><b>Placement System</b></div>
+<div class="menu">
+<a onclick="show('main')">Home</a>
+<a onclick="logout()">Logout</a>
+</div>
+</div>
+
+<!-- MAIN -->
+<div id="main" class="section active">
+<h1>Select User</h1>
+<div class="row">
+<div class="card">
+<h3>Student</h3>
+<button onclick="show('studentAuth')">Enter</button>
+</div>
+<div class="card">
+<h3>Company</h3>
+<button onclick="show('companyAuth')">Enter</button>
+</div>
+</div>
+</div>
+
+<!-- STUDENT AUTH -->
+<div id="studentAuth" class="section">
+<h2>Student Login / Register</h2>
+<div class="card">
+<input id="sName" placeholder="Name">
+<input id="sEmail" placeholder="Email">
+<input id="sPass" type="password" placeholder="Password">
+<button onclick="studentRegister()">Register</button>
+<button onclick="studentLogin()">Login</button>
+</div>
+</div>
+
+<!-- PROFILE -->
+<div id="studentProfile" class="section">
+<h2>Create Profile</h2>
+<div class="card">
+<h3>Select Skills</h3>
+<div class="skillsGrid" id="skillBox"></div>
+<input id="cgpa" type="number" placeholder="CGPA">
+<button onclick="saveProfile()">Save</button>
+</div>
+</div>
+
+<!-- DASH -->
+<div id="studentDash" class="section">
+
+<div class="profileBox" id="studentData"></div>
+
+<!-- BUTTON ONLY -->
+<button>Find Best Jobs</button>
+
+<div class="jobsContainer">
+<div class="jobSection">
+<h2>Internships</h2>
+<div id="internList"></div>
+</div>
+
+<div class="jobSection">
+<h2>Placements</h2>
+<div id="placeList"></div>
+</div>
+</div>
+
+</div>
+
+<!-- COMPANY AUTH -->
+<div id="companyAuth" class="section">
+<h2>Company Login / Register</h2>
+<div class="card">
+<input id="cName" placeholder="Company Name">
+<input id="cEmail" placeholder="Email">
+<input id="cPass" type="password" placeholder="Password">
+<button onclick="companyRegister()">Register</button>
+<button onclick="companyLogin()">Login</button>
+</div>
+</div>
+
+<!-- COMPANY DASH -->
+<div id="companyDash" class="section">
+
+<div class="companyProfileBox">
+<p><b>Name:</b> <span id="cnameShow"></span></p>
+<p><b>Email:</b> <span id="cemailShow"></span></p>
+</div>
+
+<h2>Company Dashboard</h2>
+
+<div class="row">
+
+<div class="card">
+<h3>Add Internship</h3>
+<input id="iName" placeholder="Name">
+<input id="iSlots" type="number" placeholder="Slots">
+<input id="iCgpa" type="number" placeholder="CGPA">
+<h4>Skills</h4>
+<div class="skillsGrid" id="iSkills"></div>
+<button onclick="addIntern()">Add</button>
+</div>
+
+<div class="card">
+<h3>Add Placement</h3>
+<input id="pName" placeholder="Name">
+<input id="pSlots" type="number" placeholder="Slots">
+<input id="pCgpa" type="number" placeholder="CGPA">
+<h4>Skills</h4>
+<div class="skillsGrid" id="pSkills"></div>
+<button onclick="addPlace()">Add</button>
+</div>
+
+</div>
+
+<!-- COMPANY JOB PANEL -->
+<div class="companyJobsPanel">
+<h3>Your Added Jobs</h3>
+<div id="companyJobs"></div>
+</div>
+
+</div>
+
+<script>
+let students=[];
+let companies=[];
+let currentStudent=null;
+let currentCompany=null;
+
+let internships=[];
+let placements=[];
+
+let skills=["Java","Python","C++","HTML","CSS","JavaScript","React","NodeJS"];
+
+/* LOAD SKILLS */
+function loadSkills(id){
+let box=document.getElementById(id);
+box.innerHTML="";
+skills.forEach(s=>{
+box.innerHTML+=`<label><input type="checkbox" value="${s}">${s}</label>`;
+});
+}
+loadSkills("skillBox");
+loadSkills("iSkills");
+loadSkills("pSkills");
+
+/* NAV */
+function show(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+/* STUDENT */
+function studentRegister(){
+students.push({name:sName.value,email:sEmail.value,pass:sPass.value,profileDone:false});
+sName.value=""; sEmail.value=""; sPass.value="";
+show("studentAuth");
+}
+
+function studentLogin(){
+let user=students.find(s=>s.email===sEmail.value && s.pass===sPass.value);
+if(!user) return;
+currentStudent=user;
+
+sName.value=""; sEmail.value=""; sPass.value="";
+if(!user.profileDone) show("studentProfile");
+else{
+show("studentDash");
+displayStudent();
+displayJobs();
+}
+}
+
+function saveProfile(){
+currentStudent.skills=[...document.querySelectorAll("#skillBox input:checked")].map(x=>x.value);
+currentStudent.cgpa=cgpa.value;
+currentStudent.profileDone=true;
+
+cgpa.value="";
+document.querySelectorAll("#skillBox input").forEach(cb=>cb.checked=false);
+
+show("studentDash");
+displayStudent();
+displayJobs();
+}
+
+function displayStudent(){
+let skillsHTML=currentStudent.skills.map(s=>`<span class="skillTag">${s}</span>`).join("");
+studentData.innerHTML=`<h3>${currentStudent.name}</h3><p>CGPA: ${currentStudent.cgpa}</p><div>${skillsHTML}</div>`;
+}
+
+/* COMPANY */
+function companyRegister(){
+companies.push({name:cName.value,email:cEmail.value,pass:cPass.value});
+cName.value=""; cEmail.value=""; cPass.value="";
+show("companyAuth");
+}
+
+function companyLogin(){
+let comp=companies.find(c=>c.email===cEmail.value && c.pass===cPass.value);
+if(!comp) return;
+
+currentCompany=comp;
+cnameShow.innerText=comp.name;
+cemailShow.innerText=comp.email;
+
+cName.value=""; cEmail.value=""; cPass.value="";
+show("companyDash");
+displayCompanyJobs();
+}
+
+/* ADD JOBS */
+function getSkills(id){
+return [...document.querySelectorAll(`#${id} input:checked`)].map(x=>x.value);
+}
+
+function addIntern(){
+if(!iName.value || !iCgpa.value) return;
+internships.push({
+name:iName.value,
+slots:iSlots.value,
+cgpa:iCgpa.value,
+skills:getSkills("iSkills"),
+company:currentCompany.name
+});
+iName.value=""; iSlots.value=""; iCgpa.value=""; 
+document.querySelectorAll("#iSkills input").forEach(cb=>cb.checked=false);
+displayJobs();
+displayCompanyJobs();
+}
+
+function addPlace(){
+if(!pName.value || !pCgpa.value) return;
+placements.push({
+name:pName.value,
+slots:pSlots.value,
+cgpa:pCgpa.value,
+skills:getSkills("pSkills"),
+company:currentCompany.name
+});
+pName.value=""; pSlots.value=""; pCgpa.value="";
+document.querySelectorAll("#pSkills input").forEach(cb=>cb.checked=false);
+displayJobs();
+displayCompanyJobs();
+}
+
+/* DISPLAY JOBS */
+function displayJobs(){
+internList.innerHTML="";
+placeList.innerHTML="";
+
+internships.forEach(j=>{
+let skillsHTML=j.skills.map(s=>`<span class="skillTag">${s}</span>`).join("");
+internList.innerHTML+=`
+<div class="jobCard">
+<div class="companyTag">${j.company}</div>
+<div class="jobTitle">${j.name}</div>
+<p><b>Slots:</b> ${j.slots}</p>
+<p><b>CGPA Required:</b> ${j.cgpa}</p>
+<div>${skillsHTML}</div>
+<button class="applyBtn">Apply</button>
+</div>`;
+});
+
+placements.forEach(j=>{
+let skillsHTML=j.skills.map(s=>`<span class="skillTag">${s}</span>`).join("");
+placeList.innerHTML+=`
+<div class="jobCard">
+<div class="companyTag">${j.company}</div>
+<div class="jobTitle">${j.name}</div>
+<p><b>Slots:</b> ${j.slots}</p>
+<p><b>CGPA Required:</b> ${j.cgpa}</p>
+<div>${skillsHTML}</div>
+<button class="applyBtn">Apply</button>
+</div>`;
+});
+}
+
+/* COMPANY PANEL */
+function displayCompanyJobs(){
+let html="";
+internships.filter(j=>j.company===currentCompany.name).forEach(j=>{
+html+=`<p>Internship: ${j.name} | Slots: ${j.slots}</p>`;
+});
+placements.filter(j=>j.company===currentCompany.name).forEach(j=>{
+html+=`<p>Placement: ${j.name} | Slots: ${j.slots}</p>`;
+});
+companyJobs.innerHTML=html;
+}
+
+/* LOGOUT */
+function logout(){
+currentStudent=null;
+currentCompany=null;
+show("main");
+}
+</script>
+
+</body>
+</html>
